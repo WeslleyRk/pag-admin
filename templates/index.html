@@ -305,7 +305,9 @@
 
     <script>
       // Mantive o script original aqui, refatorei apenas para melhor organização e clareza, sem alterar a lógica principal.
-      let clientes = [];
+      let clientes = JSON.parse(localStorage.getItem('clientes_linux_store')) || [];
+// Chame o renderizar logo abaixo para carregar o que estiver salvo
+renderizar();
       let valorAtivo = 0;
 
       function salvarValorAtivo() {
@@ -358,7 +360,7 @@
           renderizar();
         }
       }
-
+      localStorage.setItem("clientes_linux_store", JSON.stringify(clientes));
       function renderizar() {
         const lista = document.getElementById("clientesLista");
         lista.innerHTML = "";
