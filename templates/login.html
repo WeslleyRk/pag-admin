@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linux Store - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -13,9 +14,9 @@
             flex-direction: column;
             justify-content: center; 
             align-items: center; 
-            height: 100vh; 
+            min-height: 100vh; /* Mudado de height para min-height */
             margin: 0; 
-            overflow: hidden;
+            overflow-x: hidden; /* Evita scroll lateral */
         }
 
         /* --- O PINGUIM TUX --- */
@@ -30,15 +31,11 @@
         }
 
         .tux-espiando {
-            transform: translateY(85px);
+            transform: translateY(85px) !important;
         }
 
         .tux-svg { width: 100%; height: 100%; }
-
-        /* Estilo dos Olhos */
         .eye-white { fill: white; }
-        
-        /* Pálpebras: Elas ficam invisíveis e aparecem só no blink */
         .eyelid { 
             fill: #000; 
             transform: scaleY(0); 
@@ -46,16 +43,12 @@
             transition: transform 0.1s;
         }
 
-        /* Animação de Piscar (Blink) - Agora atua na pálpebra */
         @keyframes blink-lid {
             0%, 90%, 100% { transform: scaleY(0); }
             95% { transform: scaleY(1); }
         }
 
-        .animate-blink {
-            animation: blink-lid 4s infinite;
-        }
-
+        .animate-blink { animation: blink-lid 4s infinite; }
         .pupil { fill: black; }
 
         /* --- CARD DE LOGIN --- */
@@ -64,7 +57,8 @@
             padding: 30px; 
             border-radius: 12px; 
             border: 1px solid #30363d; 
-            width: 300px; 
+            width: 90%; /* Ocupa 90% da largura em telas pequenas */
+            max-width: 350px; /* Mas não passa de 350px no PC */
             text-align: center; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             position: relative;
@@ -75,6 +69,7 @@
             width: 100%; padding: 12px; margin: 10px 0; 
             background: #0d1117; border: 1px solid #30363d; 
             color: white; border-radius: 8px; box-sizing: border-box; 
+            font-size: 16px; /* Evita que o iOS dê zoom automático ao focar */
             transition: 0.3s;
         }
 
@@ -92,10 +87,25 @@
 
         .bg-glow {
             position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(46, 204, 113, 0.05) 0%, transparent 70%);
             z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- AJUSTES ESPECÍFICOS MOBILE --- */
+        @media (max-width: 480px) {
+            .tux-container {
+                width: 120px; /* Reduz um pouco o Tux no celular */
+                height: 120px;
+            }
+            .tux-espiando {
+                transform: translateY(65px) !important; /* Ajuste da altura da espiada no mobile */
+            }
+            .login-card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -141,36 +151,28 @@
         const tux = document.getElementById('tux');
         const passField = document.getElementById('passField');
 
-        // Olhos seguem o mouse de forma suave
-        document.addEventListener('mousemove', (e) => {
-            // Limitamos o movimento para 4px para não sair do olho
-            const x = (e.clientX / window.innerWidth - 0.5) * 8;
-            const y = (e.clientY / window.innerHeight - 0.5) * 8;
-            
+        // Olhos seguem o mouse ou toque
+        const moveEyes = (clientX, clientY) => {
+            const x = (clientX / window.innerWidth - 0.5) * 8;
+            const y = (clientY / window.innerHeight - 0.5) * 8;
             pupils.forEach(pupil => {
                 pupil.style.transform = `translate(${x}px, ${y}px)`;
             });
-        });
+        };
 
-        // Evento de "Espiar" ao focar na senha
-        passField.addEventListener('focus', () => {
-            tux.classList.add('tux-espiando');
-        });
+        document.addEventListener('mousemove', (e) => moveEyes(e.clientX, e.clientY));
+        document.addEventListener('touchmove', (e) => moveEyes(e.touches[0].clientX, e.touches[0].clientY));
 
-        passField.addEventListener('blur', () => {
-            tux.classList.remove('tux-espiando');
-        });
+        // Evento de "Espiar"
+        passField.addEventListener('focus', () => tux.classList.add('tux-espiando'));
+        passField.addEventListener('blur', () => tux.classList.remove('tux-espiando'));
 
         // Girinho ao clicar
         tux.addEventListener('click', () => {
-            tux.style.transform = 'rotate(360deg) scale(1.1)';
+            const isEspiando = tux.classList.contains('tux-espiando');
+            tux.style.transform = isEspiando ? 'translateY(65px) rotate(360deg)' : 'rotate(360deg) scale(1.1)';
             setTimeout(() => {
-                // Mantém o estado de espiando se o campo de senha ainda estiver focado
-                if(document.activeElement === passField) {
-                    tux.style.transform = 'translateY(85px) rotate(0deg)';
-                } else {
-                    tux.style.transform = 'rotate(0deg)';
-                }
+                tux.style.transform = isEspiando ? 'translateY(65px) rotate(0deg)' : 'rotate(0deg)';
             }, 500);
         });
     </script>
