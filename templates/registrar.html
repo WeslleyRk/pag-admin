@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linux Store - Registrar Mestre</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+      /* Reset e Fundo */
+      * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+      body { 
+        background-color: #0d1117; 
+        color: #ffffff; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        height: 100vh; 
+        margin: 0;
+      }
+      
+      /* Container do Formulário */
+      .register-container { 
+        background: #161b22; 
+        padding: 35px; 
+        border-radius: 12px; 
+        border: 1px solid #30363d; 
+        width: 100%; 
+        max-width: 400px; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+      }
+      
+      h2 { 
+        text-align: center; 
+        margin-bottom: 25px; 
+        font-size: 22px; 
+        color: #2ecc71; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 10px; 
+      }
+      
+      /* Inputs Estilizados */
+      input { 
+        width: 100%; 
+        padding: 12px; 
+        background: #0d1117; 
+        border: 1px solid #30363d; 
+        border-radius: 8px; 
+        color: white; 
+        outline: none; 
+        transition: 0.3s; 
+        margin-bottom: 15px;
+        display: block;
+      }
+      
+      input:focus { border-color: #2ecc71; }
+      
+      /* Botão */
+      .btn-register { 
+        width: 100%; 
+        padding: 12px; 
+        background: #2ecc71; 
+        color: #0d1117; 
+        border: none; 
+        border-radius: 8px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        transition: 0.3s; 
+        font-size: 16px;
+      }
+      
+      .btn-register:hover { 
+        background: #27ae60; 
+        transform: translateY(-2px); 
+      }
+      
+      /* Link de Voltar */
+      .back-link { 
+        display: block; 
+        text-align: center; 
+        margin-top: 20px; 
+        color: #8b949e; 
+        text-decoration: none; 
+        font-size: 13px; 
+      }
+      .back-link:hover { color: #2ecc71; }
+    </style>
+  </head>
+  <body>
+
+    <div class="register-container">
+      <h2><i class="fa-solid fa-user-plus"></i> Novo Usuário Mestre</h2>
+      
+      <form action="/registrar" method="post">
+        <input name="username" placeholder="Login" required />
+        <input name="password" type="password" placeholder="Senha" required />
+        
+        <button type="submit" class="btn-register">Criar Conta</button>
+      </form>
+
+      <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</a>
+    </div>
+
+  </body>
+</html>

@@ -3,23 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <title>Linux Store - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0d1117; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-card { background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; width: 300px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #2ecc71; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #0d1117; margin-top: 10px; }
-        h2 { color: #2ecc71; margin-bottom: 20px; }
-        .erro { color: #ff4d4d; font-size: 14px; margin-bottom: 10px; }
+        body { 
+            background-color: #0d1117; 
+            color: white; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden;
+        }
+
+        /* --- O PINGUIM TUX --- */
+        .tux-container {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2;
+            margin-bottom: -20px;
+        }
+
+        .tux-espiando {
+            transform: translateY(85px);
+        }
+
+        .tux-svg { width: 100%; height: 100%; }
+
+        /* Estilo dos Olhos */
+        .eye-white { fill: white; }
+        
+        /* Pálpebras: Elas ficam invisíveis e aparecem só no blink */
+        .eyelid { 
+            fill: #000; 
+            transform: scaleY(0); 
+            transform-origin: top; 
+            transition: transform 0.1s;
+        }
+
+        /* Animação de Piscar (Blink) - Agora atua na pálpebra */
+        @keyframes blink-lid {
+            0%, 90%, 100% { transform: scaleY(0); }
+            95% { transform: scaleY(1); }
+        }
+
+        .animate-blink {
+            animation: blink-lid 4s infinite;
+        }
+
+        .pupil { fill: black; }
+
+        /* --- CARD DE LOGIN --- */
+        .login-card { 
+            background: #161b22; 
+            padding: 30px; 
+            border-radius: 12px; 
+            border: 1px solid #30363d; 
+            width: 300px; 
+            text-align: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 5;
+        }
+
+        input { 
+            width: 100%; padding: 12px; margin: 10px 0; 
+            background: #0d1117; border: 1px solid #30363d; 
+            color: white; border-radius: 8px; box-sizing: border-box; 
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: #2ecc71; outline: none; box-shadow: 0 0 8px rgba(46, 204, 113, 0.3); }
+
+        button { 
+            width: 100%; padding: 12px; background: #2ecc71; 
+            border: none; border-radius: 8px; font-weight: bold; 
+            cursor: pointer; color: #0d1117; margin-top: 10px; 
+            transition: 0.3s;
+        }
+
+        button:hover { background: #27ae60; transform: translateY(-2px); }
+        h2 { color: #2ecc71; margin-bottom: 20px; font-size: 1.5rem; }
+
+        .bg-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
+
+    <div class="bg-glow"></div>
+
+    <div class="tux-container" id="tux">
+        <svg viewBox="0 0 100 100" class="tux-svg">
+            <ellipse cx="50" cy="55" rx="35" ry="40" fill="black"/>
+            <ellipse cx="50" cy="60" rx="25" ry="32" fill="white"/>
+            <circle cx="50" cy="35" r="25" fill="black"/>
+            
+            <g transform="translate(42, 30)">
+                <circle class="eye-white" cx="0" cy="0" r="7"/>
+                <circle class="pupil" id="pupil-l" cx="0" cy="0" r="3"/>
+                <ellipse class="eyelid animate-blink" cx="0" cy="-7" rx="8" ry="14"/>
+            </g>
+
+            <g transform="translate(58, 30)">
+                <circle class="eye-white" cx="0" cy="0" r="7"/>
+                <circle class="pupil" id="pupil-r" cx="0" cy="0" r="3"/>
+                <ellipse class="eyelid animate-blink" cx="0" cy="-7" rx="8" ry="14"/>
+            </g>
+
+            <path d="M40 38 Q50 50 60 38" fill="#f39c12" stroke="#f39c12" stroke-width="2"/>
+            <ellipse cx="35" cy="90" rx="10" ry="5" fill="#f39c12"/>
+            <ellipse cx="65" cy="90" rx="10" ry="5" fill="#f39c12"/>
+        </svg>
+    </div>
+
     <div class="login-card">
-        <h2>Admin Login</h2>
+        <h2><i class="fa-brands fa-linux"></i> Admin Login</h2>
         <form action="/login" method="post">
-            <input type="text" name="username" placeholder="Usuário" required>
-            <input type="password" name="password" placeholder="Senha" required>
-            <button type="submit">ENTRAR</button>
+            <input type="text" name="username" placeholder="Usuário" required id="userField">
+            <input type="password" name="password" placeholder="Senha" required id="passField">
+            <button type="submit">ENTRAR NA STORE</button>
         </form>
     </div>
+
+    <script>
+        const pupils = document.querySelectorAll('.pupil');
+        const tux = document.getElementById('tux');
+        const passField = document.getElementById('passField');
+
+        // Olhos seguem o mouse de forma suave
+        document.addEventListener('mousemove', (e) => {
+            // Limitamos o movimento para 4px para não sair do olho
+            const x = (e.clientX / window.innerWidth - 0.5) * 8;
+            const y = (e.clientY / window.innerHeight - 0.5) * 8;
+            
+            pupils.forEach(pupil => {
+                pupil.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        // Evento de "Espiar" ao focar na senha
+        passField.addEventListener('focus', () => {
+            tux.classList.add('tux-espiando');
+        });
+
+        passField.addEventListener('blur', () => {
+            tux.classList.remove('tux-espiando');
+        });
+
+        // Girinho ao clicar
+        tux.addEventListener('click', () => {
+            tux.style.transform = 'rotate(360deg) scale(1.1)';
+            setTimeout(() => {
+                // Mantém o estado de espiando se o campo de senha ainda estiver focado
+                if(document.activeElement === passField) {
+                    tux.style.transform = 'translateY(85px) rotate(0deg)';
+                } else {
+                    tux.style.transform = 'rotate(0deg)';
+                }
+            }, 500);
+        });
+    </script>
 </body>
 </html>
